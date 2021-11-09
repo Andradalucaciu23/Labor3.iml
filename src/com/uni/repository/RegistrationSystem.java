@@ -101,6 +101,7 @@ public boolean register(Course course, Student student) throws IOException {
             }
         }
 
+
         if (studentLCheck = false) {
             studentList.add(student.getStudentId());
         }
