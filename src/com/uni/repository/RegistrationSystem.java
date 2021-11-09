@@ -64,8 +64,8 @@ public boolean register(Course course, Student student) throws IOException {
     }
     else {
         //altfel  daca nu se depaseste trebuie sa facem inregistrarea
-        boolean courseListCheck = false;
-        boolean studentListCheck = false;
+        boolean courseLCheck = false;
+        boolean studentLCheck = false;
 
         List<Long> courseList = new ArrayList<>();
         //si verificam daca in lista de cursuri a studentului se regaseste si cursrul pe care noi il cautam
@@ -73,25 +73,27 @@ public boolean register(Course course, Student student) throws IOException {
             if (studentRepository.repoList.get(i).getStudentId() == student.getStudentId()) {
                 for (int j = 0; j < studentRepository.repoList.get(i).getEnrolledCourses().size(); j++) {
                     if (studentRepository.repoList.get(i).getEnrolledCourses().get(j) != course.getCourseId()) {
-                        courseListCheck = true;
+                        courseLCheck = true;
                         break;
                     }
+                    //daca nu il gaseste il adauga
                     courseList.add(studentRepository.repoList.get(i).getEnrolledCourses().get(j));
                 }
             }
         }
-
-        if (courseListCheck = false) {
+        //daca nu exista deloc il pune in lista de cursuri
+        if (courseLCheck = false) {
             courseList.add(course.getCourseId());
         }
 
         List<Long> studentList = new ArrayList<>();
 
+        //la fel si in cazul studentilor
         for (int i = 0; i < courseRepository.repoList.size(); i++) {
             if (courseRepository.repoList.get(i).getName() == course.getName()) {
                 for (int j = 0; j < courseRepository.repoList.get(i).getStudentsEnrolled().size(); j++) {
                     if (student.getStudentId() == courseRepository.repoList.get(i).getStudentsEnrolled().get(j)) {
-                        studentListCheck = true;
+                        studentLCheck = true;
                         break;
                     }
                     studentList.add(courseRepository.repoList.get(i).getStudentsEnrolled().get(j));
@@ -99,15 +101,20 @@ public boolean register(Course course, Student student) throws IOException {
             }
         }
 
-        if (studentListCheck = false) {
+        if (studentLCheck = false) {
             studentList.add(student.getStudentId());
         }
 
+        //si se face update pt noul curs si noul student
         Course newCourse = new Course(course.getName(), course.getTecher(), course.getMaxEnrollment(), course.getCredits());
         courseRepository.update(newCourse);
 
         Student newStudent = new Student(student.getVorname(), student.getNachname(), student.getStudentId(), student.getTotalCredits(), student.getEnrolledCourses());
         studentRepository.update(newStudent);
+
+        courseRepository.update(newCourse);
+        studentRepository.update(newStudent);
+
     }
     return true;
 }
